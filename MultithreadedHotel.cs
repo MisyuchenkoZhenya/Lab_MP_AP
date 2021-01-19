@@ -39,6 +39,10 @@ namespace Lab_MP_AP
 
         public void StartWork()
         {
+            Thread frontDeskWorker = new Thread(new ThreadStart(ActivateFrontDesk));
+            frontDeskWorker.Start();
+            //Thread frontDeskWorker2 = new Thread(new ThreadStart(ActivateFrontDesk));
+            //frontDeskWorker2.Start();
 
             while (currentDate < finalDate)
             {
@@ -54,7 +58,7 @@ namespace Lab_MP_AP
 
                 if (new Random().Next(0, 100) > 85) // check if there are new clients
                 {
-                    int newClientsCount = new Random().Next(1, 5);
+                    int newClientsCount = new Random().Next(1, 6);
                     for (int i = 0; i < newClientsCount; i++)
                     {
                         clientsForSettle.Add(new Client());
@@ -70,11 +74,6 @@ namespace Lab_MP_AP
                     logger.Log($"{clientsFromWaitingRoom.Count} clients came again.");
                 }
 
-                if (clientsForSettle.Any())
-                {
-                    
-                }
-
                 Thread.Sleep(6);
                 currentDate = currentDate.AddMinutes(60);
             }
@@ -82,28 +81,38 @@ namespace Lab_MP_AP
 
         private void ActivateFrontDesk()
         {
-            Client newClient;
-
-            lock (clientsForSettle)
+            while (true)
             {
-                newClient = clientsForSettle.First();
-                clientsForSettle.Remove(newClient);
-            }
-            
-            var room = GetAvailableRoom(newClient.Money);
-            if (room != null)
-            {
-                room.SettleClient(newClient, currentDate);
-                logger.Log("New client was settled.");
+                Client newClient;
 
-                Thread.Sleep(2);
-            }
-            else
-            {
-                waitingRoom.AddClient(newClient, currentDate);
-                logger.Log("There is no available room for new client.");
+                lock (clientsForSettle)
+                {
+                    newClient = clientsForSettle.FirstOrDefault();
 
-                Thread.Sleep(1);
+                    if (newClient != null)
+                    {
+                        clientsForSettle.Remove(newClient);
+                    }
+                }
+
+                if (newClient != null)
+                {
+                    var room = GetAvailableRoom(newClient.Money);
+                    if (room != null)
+                    {
+                        room.SettleClient(newClient, currentDate);
+                        logger.Log("New client was settled.");
+
+                        Thread.Sleep(2);
+                    }
+                    else
+                    {
+                        waitingRoom.AddClient(newClient, currentDate);
+                        logger.Log("There is no available room for new client.");
+
+                        Thread.Sleep(1);
+                    }
+                }
             }
         }
 

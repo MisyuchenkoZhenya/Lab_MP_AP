@@ -54,7 +54,7 @@ namespace Lab_MP_AP
 
                 if (new Random().Next(0, 100) > 85) // check if there are new clients
                 {
-                    int newClientsCount = new Random().Next(1, 5);
+                    int newClientsCount = new Random().Next(1, 6);
                     for (int i = 0; i < newClientsCount; i++)
                     {
                         clientsForSettle.Add(new Client());

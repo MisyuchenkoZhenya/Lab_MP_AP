@@ -18,8 +18,8 @@ namespace Lab_MP_AP
             int X = 75, Y = 100, Z = 150;
 
             //IHotel hotel = new Hotel(new ConsoleLogger());
-            IHotel hotel = new MultithreadedHotel(new ConsoleLogger());
-            //IHotel hotel = new AsyncHotel(new ConsoleLogger());
+            //IHotel hotel = new MultithreadedHotel(new ConsoleLogger());
+            IHotel hotel = new AsyncHotel(new ConsoleLogger());
             //IHotel hotel = new AsyncMultithreadedHotel(new ConsoleLogger());
 
             hotel.AddRooms(N, X);

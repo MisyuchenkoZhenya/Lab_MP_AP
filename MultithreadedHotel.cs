@@ -12,6 +12,7 @@ namespace Lab_MP_AP
         private WaitingRoom waitingRoom;
         private List<Client> clientsForSettle;
         private ILogger logger;
+        private int TotalClientsArrived { get; set; }
 
         public DateTime currentDate { get; set; }
         public DateTime finalDate { get; set; }
@@ -32,6 +33,7 @@ namespace Lab_MP_AP
             waitingRoom = new WaitingRoom();
             clientsForSettle = new List<Client>();
             logger = realizedLogger;
+            TotalClientsArrived = 0;
 
             currentDate = new DateTime(2021, 01, 01);
             finalDate = currentDate.AddMonths(1);
@@ -61,7 +63,7 @@ namespace Lab_MP_AP
                     int newClientsCount = new Random().Next(1, 6);
                     for (int i = 0; i < newClientsCount; i++)
                     {
-                        clientsForSettle.Add(new Client());
+                        clientsForSettle.Add(new Client($"Client-{++TotalClientsArrived}"));
                     }
 
                     logger.Log($"{newClientsCount} new clients arrived.");

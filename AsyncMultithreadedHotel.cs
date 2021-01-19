@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Lab_MP_AP
 {
-    public class AsencMultithreadedHotel : IHotel
+    public class AsyncMultithreadedHotel : IHotel
     {
         public void AddRooms(int count, int price)
         {

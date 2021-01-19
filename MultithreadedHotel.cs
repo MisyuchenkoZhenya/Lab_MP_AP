@@ -103,14 +103,14 @@ namespace Lab_MP_AP
                     if (room != null)
                     {
                         room.SettleClient(newClient, currentDate);
-                        logger.Log("New client was settled.");
+                        logger.Log($"New client '{newClient.Name}' was settled.");
 
                         Thread.Sleep(2);
                     }
                     else
                     {
                         waitingRoom.AddClient(newClient, currentDate);
-                        logger.Log("There is no available room for new client.");
+                        logger.Log($"There is no available room for new client '{newClient.Name}'.");
 
                         Thread.Sleep(1);
                     }

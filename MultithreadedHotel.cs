@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Lab_MP_AP
 {
-    public class Hotel : IHotel
+    public class MultithreadedHotel : IHotel
     {
         private List<Room> rooms;
         private WaitingRoom waitingRoom;
@@ -18,15 +18,15 @@ namespace Lab_MP_AP
 
         public int OccupiedRoomsCount
         {
-            get {return rooms.Where(r => !r.IsAvailabe).Count();}
+            get { return rooms.Where(r => !r.IsAvailabe).Count(); }
         }
 
         public int awaitersCount
         {
-            get {return waitingRoom.Awaiters.Count();}
+            get { return waitingRoom.Awaiters.Count(); }
         }
 
-        public Hotel(ILogger realizedLogger)
+        public MultithreadedHotel(ILogger realizedLogger)
         {
             rooms = new List<Room>();
             waitingRoom = new WaitingRoom();
@@ -39,9 +39,9 @@ namespace Lab_MP_AP
 
         public void StartWork()
         {
+
             while (currentDate < finalDate)
             {
-                int timePointsLeft = 6; //one tp is 10 abstract minutes
                 logger.Log(Environment.NewLine +
                             $"Day {currentDate.ToString("dd, HH:mm:ss")}. " +
                             $"({OccupiedRoomsCount} rooms are occupied, {awaitersCount} peoples in the waiting room)");
@@ -72,47 +72,44 @@ namespace Lab_MP_AP
 
                 if (clientsForSettle.Any())
                 {
-                    var settledClientsCount = 0;
-                    var clientsWithoutRoomCount = 0;
-
-                    while (clientsForSettle.Any())
-                    {
-                        if(timePointsLeft <= 0)
-                        {
-                            break;
-                        }
-                        var newClient = clientsForSettle.First();
-                        clientsForSettle.Remove(newClient);
-                        var room = GetAvailableRoom(newClient.Money);
-
-                        if (room != null)
-                        {
-                            room.SettleClient(newClient, currentDate);
-                            settledClientsCount++;
-                            timePointsLeft -= 2;
-                            Thread.Sleep(timePointsLeft);
-                        }
-                        else
-                        {
-                            waitingRoom.AddClient(newClient, currentDate);
-                            clientsWithoutRoomCount++;
-                            timePointsLeft -= 1;
-                            Thread.Sleep(timePointsLeft);
-                        }
-                    }
-                    logger.Log($"{settledClientsCount} clients were settled. " +
-                               $"{clientsWithoutRoomCount} clients didn't find the room.");
+                    
                 }
 
-                Thread.Sleep(timePointsLeft);
+                Thread.Sleep(6);
                 currentDate = currentDate.AddMinutes(60);
             }
+        }
+
+        private void ActivateFrontDesk()
+        {
+            Client newClient;
+
+            lock (clientsForSettle)
+            {
+                newClient = clientsForSettle.First();
+                clientsForSettle.Remove(newClient);
+            }
             
+            var room = GetAvailableRoom(newClient.Money);
+            if (room != null)
+            {
+                room.SettleClient(newClient, currentDate);
+                logger.Log("New client was settled.");
+
+                Thread.Sleep(2);
+            }
+            else
+            {
+                waitingRoom.AddClient(newClient, currentDate);
+                logger.Log("There is no available room for new client.");
+
+                Thread.Sleep(1);
+            }
         }
 
         public void AddRooms(int count, int price)
         {
-            for(int i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 rooms.Add(new Room(price));
             }
@@ -130,6 +127,7 @@ namespace Lab_MP_AP
         public int MoveOutClients(DateTime currentDate)
         {
             List<Room> roomsForMovingOut = rooms.Where(r => !r.IsAvailabe && r.CheckOutDate <= currentDate).ToList();
+
             foreach (var room in roomsForMovingOut)
             {
                 room.RemoveClient();

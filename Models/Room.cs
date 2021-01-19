@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Lab_MP_AP
 {
@@ -12,10 +10,7 @@ namespace Lab_MP_AP
         public int Price { get; }
         public bool IsAvailabe
         {
-            get
-            {
-                return _client == null;
-            }
+            get { return _client == null; }
         }
 
         public Room(int price)

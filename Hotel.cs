@@ -92,24 +92,23 @@ namespace Lab_MP_AP
                             room.SettleClient(newClient, CurrentDate);
                             settledClientsCount++;
                             timePointsLeft -= 2;
-                            Thread.Sleep(timePointsLeft);
+                            Thread.Sleep(timePointsLeft >= 0 ? timePointsLeft : 0);
                         }
                         else
                         {
                             waitingRoom.AddClient(newClient, CurrentDate);
                             clientsWithoutRoomCount++;
                             timePointsLeft -= 1;
-                            Thread.Sleep(timePointsLeft);
+                            Thread.Sleep(timePointsLeft >= 0 ? timePointsLeft : 0);
                         }
                     }
                     logger.Log($"{settledClientsCount} clients were settled. " +
                                $"{clientsWithoutRoomCount} clients didn't find the room.");
                 }
 
-                Thread.Sleep(timePointsLeft);
+                Thread.Sleep(timePointsLeft >= 0 ? timePointsLeft : 0);
                 CurrentDate = CurrentDate.AddMinutes(60);
             }
-            
         }
 
         public void AddRooms(int count, int price)

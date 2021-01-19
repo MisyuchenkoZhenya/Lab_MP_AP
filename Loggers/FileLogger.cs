@@ -5,21 +5,21 @@ namespace Lab_MP_AP.Loggers
 {
     public class FileLogger : ILogger, IDisposable
     {
-        private StreamWriter writer;
+        private StreamWriter _writer;
 
         public FileLogger(string filePath)
         {
-            this.writer = new StreamWriter(filePath);
+            _writer = new StreamWriter(filePath);
         }
 
         public void Log(string text)
         {
-            writer.WriteLine(text);
+            _writer.WriteLine(text);
         }
 
         public void Dispose()
         {
-            writer.Close();
+            _writer.Close();
         }
     }
 }

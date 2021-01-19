@@ -9,8 +9,8 @@ namespace Lab_MP_AP
 
         public Awaiter(Client client, DateTime currentDate)
         {
-            this.Client = client;
-            this.WaitingFor = currentDate.AddHours(new Random().Next(12, 24));
+            Client = client;
+            WaitingFor = currentDate.AddHours(new Random().Next(12, 24));
         }
     }
 }

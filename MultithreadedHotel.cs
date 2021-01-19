@@ -14,15 +14,15 @@ namespace Lab_MP_AP
         private ILogger logger;
         private int TotalClientsArrived { get; set; }
 
-        public DateTime currentDate { get; set; }
-        public DateTime finalDate { get; set; }
+        public DateTime CurrentDate { get; set; }
+        public DateTime FinalDate { get; set; }
 
         public int OccupiedRoomsCount
         {
             get { return rooms.Where(r => !r.IsAvailabe).Count(); }
         }
 
-        public int awaitersCount
+        public int AwaitersCount
         {
             get { return waitingRoom.Awaiters.Count(); }
         }
@@ -35,8 +35,8 @@ namespace Lab_MP_AP
             logger = realizedLogger;
             TotalClientsArrived = 0;
 
-            currentDate = new DateTime(2021, 01, 01);
-            finalDate = currentDate.AddMonths(1);
+            CurrentDate = new DateTime(2021, 01, 01);
+            FinalDate = CurrentDate.AddMonths(1);
         }
 
         public void StartWork()
@@ -46,13 +46,13 @@ namespace Lab_MP_AP
             //Thread frontDeskWorker2 = new Thread(new ThreadStart(ActivateFrontDesk));
             //frontDeskWorker2.Start();
 
-            while (currentDate < finalDate)
+            while (CurrentDate < FinalDate)
             {
                 logger.Log(Environment.NewLine +
-                            $"Day {currentDate.ToString("dd, HH:mm:ss")}. " +
-                            $"({OccupiedRoomsCount} rooms are occupied, {awaitersCount} peoples in the waiting room)");
+                            $"Day {CurrentDate.ToString("dd, HH:mm:ss")}. " +
+                            $"({OccupiedRoomsCount} rooms are occupied, {AwaitersCount} peoples in the waiting room)");
 
-                var movedClientsCount = MoveOutClients(currentDate);
+                var movedClientsCount = MoveOutClients(CurrentDate);
                 if (movedClientsCount > 0)
                 {
                     logger.Log($"{movedClientsCount} clients were moved out from hotel.");
@@ -69,7 +69,7 @@ namespace Lab_MP_AP
                     logger.Log($"{newClientsCount} new clients arrived.");
                 }
 
-                var clientsFromWaitingRoom = waitingRoom.GetAvailableClients(currentDate);
+                var clientsFromWaitingRoom = waitingRoom.GetAvailableClients(CurrentDate);
                 if (clientsFromWaitingRoom.Count > 0)
                 {
                     clientsForSettle.AddRange(clientsFromWaitingRoom);
@@ -77,7 +77,7 @@ namespace Lab_MP_AP
                 }
 
                 Thread.Sleep(6);
-                currentDate = currentDate.AddMinutes(60);
+                CurrentDate = CurrentDate.AddMinutes(60);
             }
         }
 
@@ -102,14 +102,14 @@ namespace Lab_MP_AP
                     var room = GetAvailableRoom(newClient.Money);
                     if (room != null)
                     {
-                        room.SettleClient(newClient, currentDate);
+                        room.SettleClient(newClient, CurrentDate);
                         logger.Log($"New client '{newClient.Name}' was settled.");
 
                         Thread.Sleep(2);
                     }
                     else
                     {
-                        waitingRoom.AddClient(newClient, currentDate);
+                        waitingRoom.AddClient(newClient, CurrentDate);
                         logger.Log($"There is no available room for new client '{newClient.Name}'.");
 
                         Thread.Sleep(1);

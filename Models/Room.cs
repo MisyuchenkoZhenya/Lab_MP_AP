@@ -20,16 +20,16 @@ namespace Lab_MP_AP
 
         public void SettleClient(Client newClient, DateTime currentDateTime)
         {
-            if (this.IsAvailabe)
+            if (IsAvailabe)
             {
-                this._client = newClient;
-                this.CheckOutDate = currentDateTime.AddDays(1);
+                _client = newClient;
+                CheckOutDate = currentDateTime.AddDays(1);
             }
         }
 
         public void RemoveClient()
         {
-            this._client = null;
+            _client = null;
         }
     }
 }

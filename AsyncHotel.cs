@@ -23,7 +23,7 @@ namespace Lab_MP_AP
             get { return rooms.Where(r => !r.IsAvailabe).Count(); }
         }
 
-        public int awaitersCount
+        public int AwaitersCount
         {
             get { return waitingRoom.Awaiters.Count(); }
         }
@@ -46,7 +46,7 @@ namespace Lab_MP_AP
             {
                 logger.Log(Environment.NewLine +
                             $"Day {currentDate.ToString("dd, HH:mm:ss")}. " +
-                            $"({OccupiedRoomsCount} rooms are occupied, {awaitersCount} peoples in the waiting room)");
+                            $"({OccupiedRoomsCount} rooms are occupied, {AwaitersCount} peoples in the waiting room)");
 
                 var movedClientsCount = MoveOutClients(currentDate);
                 if (movedClientsCount > 0)
